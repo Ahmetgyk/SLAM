@@ -1,0 +1,32 @@
+import cv2
+import numpy as np
+
+# Resmi yükle
+image = cv2.imread('beyaz_resim.png')
+
+# Resmi HSV renk uzayına dönüştür
+hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+
+# Kırmızı renk aralığını tanımla (Düşük ve yüksek HSV değerleri)
+lower_blue = np.array([100, 50, 50])
+upper_blue = np.array([130, 255, 255])
+
+# Maske oluştur
+blue_mask = cv2.inRange(hsv_image, lower_blue, upper_blue)
+
+# Maskelenmiş piksellerin koordinatlarını bul
+red_pixel_coords = np.argwhere(blue_mask > 0)
+
+ortanokta = [x for x in red_pixel_coords]
+for n in range(int(len(ortanokta) / 2)):
+    print("[{0},{1}]".format(ortanokta[(n) * 2][0]-ortanokta[(n * 2) + 1][0], ortanokta[n * 2][1]-ortanokta[(n * 2) + 1][1]))
+
+print("Kırmızı Piksellerin Koordinatları:")
+for coord in red_pixel_coords:
+    print(coord)
+
+# Orijinal resim ve sadece kırmızı pikselleri içeren resmi göster
+cv2.imshow('Orijinal Resim', image)
+cv2.imshow('Sadece Kırmızı Pikseller', blue_mask)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
